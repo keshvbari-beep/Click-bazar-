@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Click Bazar - Online Shopping</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#121212;
+color:#eee;
+overflow-x:hidden;
+}
+
+/* INTRO */
+
+#logoOverlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#000;
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+animation:fadeOut 1s ease 2s forwards;
+pointer-events:none;
+}
+
+#logoOverlay h1{
+font-size:42px;
+color:#fff;
+letter-spacing:2px;
+animation:slideIn .6s ease;
+}
+
+@keyframes slideIn{
+from{
+transform:translateY(40px);
+opacity:0;
+}
+to{
+transform:translateY(0);
+opacity:1;
+}
+}
+
+@keyframes fadeOut{
+to{
+opacity:0;
+visibility:hidden;
+}
+}
+
+
+/* HEADER */
+
+header{
+background:#1e1e1e;
+padding:14px 10px;
+display:flex;
+align-items:center;
+gap:15px;
+position:sticky;
+top:0;
+z-index:100;
+box-shadow:0 2px 10px rgba(0,0,0,.4);
+}
+
+.logo{
+font-size:23px;
+font-weight:bold;
+color:#ff9900;
+white-space:nowrap;
+}
+
+.search{
+flex:1;
+display:flex;
+}
+
+.search input{
+width:100%;
+padding:12px;
+background:#2c2c2c;
+border:0;
+outline:0;
+color:white;
+border-radius:6px 0 0 6px;
+}
+
+.search button{
+padding:12px 18px;
+border:0;
+background:#ff9900;
+font-weight:bold;
+border-radius:0 6px 6px 0;
+}
+
+
+/* BANNER */
+
+.banner{
+margin:20px;
+padding:45px 20px;
+text-align:center;
+border-radius:12px;
+background:linear-gradient(
+135deg,
+#ff9900,
+#ff6b00
+);
+color:#000;
+}
+
+.banner h1{
+font-size:32px;
+margin-bottom:10px;
+}
+
+
+/* PRODUCTS */
+
+.products{
+max-width:1200px;
+margin:auto;
+padding:20px;
+}
+
+.title{
+border-left:5px solid #ff9900;
+padding-left:12px;
+margin-bottom:25px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:
+repeat(auto-fill,minmax(230px,1fr));
+gap:20px;
+}
+
+
+/* CARD */
+
+.product{
+background:#1e1e1e;
+border:1px solid #333;
+border-radius:12px;
+padding:15px;
+text-align:center;
+transition:.3s;
+}
+
+.product:hover{
+transform:translateY(-5px);
+border-color:#ff9900;
+}
+
+.product img{
+width:100%;
+height:210px;
+object-fit:contain;
+background:#2c2c2c;
+border-radius:8px;
+}
+
+.product h3{
+margin:14px 0;
+font-size:16px;
+line-height:1.4;
+}
+
+.price{
+color:#ff9900;
+font-size:22px;
+font-weight:bold;
+}
+
+.desc{
+color:#aaa;
+font-size:13px;
+margin:10px 0;
+min-height:38px;
+line-height:1.4;
+}
+
+.buy{
+display:inline-block;
+margin-top:10px;
+padding:11px 22px;
+border-radius:25px;
+text-decoration:none;
+background:
+linear-gradient(135deg,#ff9900,#ff6b00);
+color:#000;
+font-weight:bold;
+}
+
+.buy:hover{
+transform:scale(1.05);
+}
+
+#loading{
+text-align:center;
+padding:40px;
+color:#aaa;
+}
+
+#noProducts{
+display:none;
+text-align:center;
+padding:40px;
+color:#aaa;
+}
+
+
+/* FOOTER */
+
+footer{
+margin-top:50px;
+padding:30px;
+text-align:center;
+background:#1e1e1e;
+color:#777;
+}
+
+</style>
+</head>
+
+<body>
+
+
+<!-- INTRO -->
+
+<div id="logoOverlay">
+
+<h1>🛒 CLICK BAZAR</h1>
+
+</div>
+
+
+<!-- HEADER -->
+
+<header>
+
+<div class="logo">
+Click Bazar
+</div>
+
+<div class="search">
+
+<input
+id="searchBox"
+type="text"
+placeholder="🔍 Search products..."
+>
+
+<button id="searchBtn">
+Search
+</button>
+
+</div>
+
+</header>
+
+
+<!-- BANNER -->
+
+<div class="banner">
+
+<h1>🎉 Welcome to Click Bazar!</h1>
+
+<p>
+Best Deals on Amazon Products - Shop Now & Save Big!
+</p>
+
+</div>
+
+
+<!-- PRODUCTS -->
+
+<section class="products">
+
+<h2 class="title">
+🔥 Trending Products
+</h2>
+
+<div id="loading">
+Products loading...
+</div>
+
+<div id="noProducts">
+कोई product नहीं मिला।
+</div>
+
+<div
+class="grid"
+id="productsGrid">
+</div>
+
+</section>
+
+
+<footer>
+
+© 2026 Click Bazar
+
+<br>
+
+TSB Copyright Holder
+
+</footer>
+
+
+<script type="module">
+
+import { db }
+from "./firebase.js";
+
+
+import {
+collection,
+getDocs
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+let products=[];
+
+
+/* LOAD PRODUCTS */
+
+async function loadProducts(){
+
+try{
+
+const snapshot=
+await getDocs(
+collection(db,"products")
+);
+
+
+products=[];
+
+
+snapshot.forEach(doc=>{
+
+products.push({
+
+id:doc.id,
+
+...doc.data()
+
+});
+
+});
+
+
+displayProducts(products);
+
+
+}catch(error){
+
+console.error(error);
+
+document.getElementById("loading")
+.textContent=
+"Products load नहीं हुए ❌";
+
+}
+
+}
+
+
+/* DISPLAY */
+
+function displayProducts(list){
+
+const grid=
+document.getElementById("productsGrid");
+
+const loading=
+document.getElementById("loading");
+
+const noProducts=
+document.getElementById("noProducts");
+
+
+loading.style.display="none";
+
+grid.innerHTML="";
+
+
+if(list.length===0){
+
+noProducts.style.display="block";
+
+return;
+
+}
+
+
+noProducts.style.display="none";
+
+
+list.forEach(p=>{
+
+const card=
+document.createElement("div");
+
+card.className="product";
+
+
+const img=
+document.createElement("img");
+
+img.src=p.image || "";
+
+img.alt=p.title || "Product";
+
+
+const title=
+document.createElement("h3");
+
+title.textContent=
+p.title || "";
+
+
+const price=
+document.createElement("div");
+
+price.className="price";
+
+price.textContent=
+"₹"+(p.price || "");
+
+
+const desc=
+document.createElement("div");
+
+desc.className="desc";
+
+desc.textContent=
+p.desc || "";
+
+
+const buy=
+document.createElement("a");
+
+buy.className="buy";
+
+buy.textContent=
+"🛒 Buy on Amazon";
+
+buy.href=
+p.link || "#";
+
+buy.target="_blank";
+
+buy.rel="noopener noreferrer";
+
+
+card.appendChild(img);
+
+card.appendChild(title);
+
+card.appendChild(price);
+
+card.appendChild(desc);
+
+card.appendChild(buy);
+
+grid.appendChild(card);
+
+});
+
+}
+
+
+/* SEARCH */
+
+function searchProducts(){
+
+const query=
+document
+.getElementById("searchBox")
+.value
+.toLowerCase()
+.trim();
+
+
+const result=
+products.filter(p=>
+
+String(p.title || "")
+.toLowerCase()
+.includes(query)
+
+);
+
+
+displayProducts(result);
+
+}
+
+
+document
+.getElementById("searchBtn")
+.addEventListener(
+"click",
+searchProducts
+);
+
+
+document
+.getElementById("searchBox")
+.addEventListener(
+"input",
+searchProducts
+);
+
+
+/* START */
+
+loadProducts();
+
+</script>
+
+</body>
+  </html>

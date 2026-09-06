@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Click Bazar - Admin Panel</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#121212;color:#eee;padding:15px}
+.container{max-width:900px;margin:auto}
+.card{background:#1e1e1e;padding:25px;border-radius:15px;border:1px solid #333;margin-bottom:20px}
+h1{text-align:center;color:#ff9900;margin-bottom:25px}
+h2{margin-bottom:20px;color:#fff}
+
+input,textarea{
+width:100%;padding:13px;margin:7px 0 15px;
+background:#2c2c2c;color:white;border:1px solid #444;
+border-radius:8px;outline:none
+}
+textarea{height:90px}
+
+button{
+border:0;border-radius:25px;padding:12px 22px;
+background:linear-gradient(135deg,#ff9900,#ff6b00);
+font-weight:bold;cursor:pointer
+}
+
+.logout{background:#e53935;color:white;float:right}
+
+.product{
+display:flex;gap:15px;background:#292929;
+padding:15px;border-radius:10px;margin-bottom:15px
+}
+
+.product img{
+width:110px;height:110px;object-fit:contain;
+background:#111;border-radius:8px
+}
+
+.product-info{flex:1}
+.price{color:#ff9900;font-size:20px;font-weight:bold;margin:7px 0}
+
+.delete{background:#e53935;color:white;margin-top:10px}
+.edit{background:#555;color:white;margin-top:10px;margin-right:5px}
+
+.hidden{display:none}
+.message{text-align:center;margin:10px;color:#ff9900}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div id="loginBox" class="card">
+
+<h1>🛒 Click Bazar</h1>
+
+<h2>🔐 Admin Login</h2>
+
+<input type="email" id="email" placeholder="Admin Email">
+
+<input type="password" id="password" placeholder="Password">
+
+<button id="loginBtn">Login</button>
+
+<div id="loginMsg" class="message"></div>
+
+</div>
+
+
+<div id="adminBox" class="hidden">
+
+<div class="card">
+
+<button class="logout" id="logoutBtn">Logout</button>
+
+<h1>🛒 Click Bazar Admin</h1>
+
+<h2>➕ Add / Edit Product</h2>
+
+<input type="text" id="title" placeholder="Product Title">
+
+<input type="number" id="price" placeholder="Price ₹">
+
+<input type="url" id="image" placeholder="Product Image URL">
+
+<input type="url" id="link" placeholder="Amazon Affiliate Link">
+
+<textarea id="desc" placeholder="Product Description"></textarea>
+
+<button id="saveBtn">➕ Add Product</button>
+
+<button id="cancelBtn"
+style="display:none;background:#555;color:white;margin-left:5px">
+Cancel
+</button>
+
+<div id="status" class="message"></div>
+
+</div>
+
+
+<div class="card">
+
+<h2>📦 Products</h2>
+
+<div id="productsList">Loading...</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script type="module">
+
+import { db, auth } from "./firebase.js";
+
+import {
+signInWithEmailAndPassword,
+onAuthStateChanged,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+collection,
+addDoc,
+getDocs,
+deleteDoc,
+doc,
+updateDoc,
+serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+let products=[];
+let editingId=null;
+
+
+const loginBtn=document.getElementById("loginBtn");
+
+const logoutBtn=document.getElementById("logoutBtn");
+
+
+loginBtn.addEventListener("click",async()=>{
+
+const email=document.getElementById("email").value.trim();
+
+const password=document.getElementById("password").value;
+
+const msg=document.getElementById("loginMsg");
+
+if(!email || !password){
+
+msg.textContent="Email और Password डालें";
+
+return;
+
+}
+
+try{
+
+await signInWithEmailAndPassword(
+auth,
+email,
+password
+);
+
+msg.textContent="Login successful ✅";
+
+}catch(error){
+
+console.error(error);
+
+msg.textContent="Login failed ❌";
+
+}
+
+});
+
+
+logoutBtn.addEventListener("click",async()=>{
+
+await signOut(auth);
+
+});
+
+
+onAuthStateChanged(auth,(user)=>{
+
+if(user){
+
+document.getElementById("loginBox")
+.classList.add("hidden");
+
+document.getElementById("adminBox")
+.classList.remove("hidden");
+
+loadProducts();
+
+}else{
+
+document.getElementById("loginBox")
+.classList.remove("hidden");
+
+document.getElementById("adminBox")
+.classList.add("hidden");
+
+}
+
+});
+
+
+document.getElementById("saveBtn")
+.addEventListener("click",saveProduct);
+
+
+async function saveProduct(){
+
+const title=document.getElementById("title").value.trim();
+
+const price=document.getElementById("price").value.trim();
+
+const image=document.getElementById("image").value.trim();
+
+const link=document.getElementById("link").value.trim();
+
+const desc=document.getElementById("desc").value.trim();
+
+const status=document.getElementById("status");
+
+
+if(!title || !price || !image || !link){
+
+status.textContent=
+"Title, Price, Image और Amazon Link जरूरी हैं.";
+
+return;
+
+}
+
+
+try{
+
+if(editingId){
+
+await updateDoc(
+
+doc(db,"products",editingId),
+
+{
+title,
+price,
+image,
+link,
+desc,
+updatedAt:serverTimestamp()
+}
+
+);
+
+status.textContent="Product updated ✅";
+
+}else{
+
+await addDoc(
+
+collection(db,"products"),
+
+{
+title,
+price,
+image,
+link,
+desc,
+createdAt:serverTimestamp()
+}
+
+);
+
+status.textContent="Product added ✅";
+
+}
+
+clearForm();
+
+await loadProducts();
+
+}catch(error){
+
+console.error(error);
+
+status.textContent=
+"Error: "+error.message;
+
+}
+
+}
+
+
+async function loadProducts(){
+
+const list=document.getElementById("productsList");
+
+list.innerHTML="Loading...";
+
+try{
+
+const snapshot=
+await getDocs(collection(db,"products"));
+
+list.innerHTML="";
+
+if(snapshot.empty){
+
+list.innerHTML="<p>No products added yet.</p>";
+
+return;
+
+}
+
+
+snapshot.forEach(item=>{
+
+const p=item.data();
+
+const card=document.createElement("div");
+
+card.className="product";
+
+
+const img=document.createElement("img");
+
+img.src=p.image || "";
+
+img.alt=p.title || "";
+
+
+const info=document.createElement("div");
+
+info.className="product-info";
+
+
+const title=document.createElement("h3");
+
+title.textContent=p.title || "";
+
+
+const price=document.createElement("div");
+
+price.className="price";
+
+price.textContent="₹"+(p.price || "");
+
+
+const desc=document.createElement("p");
+
+desc.textContent=p.desc || "";
+
+
+const edit=document.createElement("button");
+
+edit.className="edit";
+
+edit.textContent="✏️ Edit";
+
+edit.onclick=()=>editProduct(item.id);
+
+
+const del=document.createElement("button");
+
+del.className="delete";
+
+del.textContent="🗑️ Delete";
+
+del.onclick=()=>deleteProduct(item.id);
+
+
+info.appendChild(title);
+
+info.appendChild(price);
+
+info.appendChild(desc);
+
+info.appendChild(edit);
+
+info.appendChild(del);
+
+card.appendChild(img);
+
+card.appendChild(info);
+
+list.appendChild(card);
+
+});
+
+}catch(error){
+
+console.error(error);
+
+list.innerHTML=
+"Products load नहीं हुए ❌";
+
+}
+
+}
+
+
+async function deleteProduct(id){
+
+if(!confirm(
+"क्या आप यह product delete करना चाहते हैं?"
+)) return;
+
+
+try{
+
+await deleteDoc(
+doc(db,"products",id)
+);
+
+await loadProducts();
+
+}catch(error){
+
+alert("Delete error: "+error.message);
+
+}
+
+}
+
+
+async function editProduct(id){
+
+try{
+
+const snapshot=
+await getDocs(collection(db,"products"));
+
+let product=null;
+
+
+snapshot.forEach(item=>{
+
+if(item.id===id){
+
+product={
+id:item.id,
+...item.data()
+};
+
+}
+
+});
+
+
+if(!product)return;
+
+
+editingId=id;
+
+document.getElementById("title").value=
+product.title || "";
+
+document.getElementById("price").value=
+product.price || "";
+
+document.getElementById("image").value=
+product.image || "";
+
+document.getElementById("link").value=
+product.link || "";
+
+document.getElementById("desc").value=
+product.desc || "";
+
+document.getElementById("saveBtn").textContent=
+"💾 Update Product";
+
+document.getElementById("cancelBtn").style.display=
+"inline-block";
+
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}catch(error){
+
+console.error(error);
+
+}
+
+}
+
+
+document.getElementById("cancelBtn")
+.addEventListener("click",clearForm);
+
+
+function clearForm(){
+
+editingId=null;
+
+document.getElementById("title").value="";
+
+document.getElementById("price").value="";
+
+document.getElementById("image").value="";
+
+document.getElementById("link").value="";
+
+document.getElementById("desc").value="";
+
+document.getElementById("saveBtn").textContent=
+"➕ Add Product";
+
+document.getElementById("cancelBtn").style.display=
+"none";
+
+document.getElementById("status").textContent="";
+
+}
+
+</script>
+
+</body>
+  </html>

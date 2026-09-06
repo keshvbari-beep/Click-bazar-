@@ -1,532 +1,1260 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Click Bazar - Admin Panel</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#121212;color:#eee;padding:15px}
-.container{max-width:900px;margin:auto}
-.card{background:#1e1e1e;padding:25px;border-radius:15px;border:1px solid #333;margin-bottom:20px}
-h1{text-align:center;color:#ff9900;margin-bottom:25px}
-h2{margin-bottom:20px;color:#fff}
+  <title>Click Bazar - Admin Panel</title>
 
-input,textarea{
-width:100%;padding:13px;margin:7px 0 15px;
-background:#2c2c2c;color:white;border:1px solid #444;
-border-radius:8px;outline:none
-}
-textarea{height:90px}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-button{
-border:0;border-radius:25px;padding:12px 22px;
-background:linear-gradient(135deg,#ff9900,#ff6b00);
-font-weight:bold;cursor:pointer
-}
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
 
-.logout{background:#e53935;color:white;float:right}
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
 
-.product{
-display:flex;gap:15px;background:#292929;
-padding:15px;border-radius:10px;margin-bottom:15px
-}
+    h1 {
+      text-align: center;
+      color: #ff9900;
+      margin-bottom: 25px;
+    }
 
-.product img{
-width:110px;height:110px;object-fit:contain;
-background:#111;border-radius:8px
-}
+    .box {
+      background: #1d1d1d;
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+    }
 
-.product-info{flex:1}
-.price{color:#ff9900;font-size:20px;font-weight:bold;margin:7px 0}
+    input,
+    textarea {
+      width: 100%;
+      padding: 13px;
+      margin: 8px 0 14px;
+      border: 1px solid #444;
+      border-radius: 8px;
+      background: #292929;
+      color: white;
+      font-size: 15px;
+    }
 
-.delete{background:#e53935;color:white;margin-top:10px}
-.edit{background:#555;color:white;margin-top:10px;margin-right:5px}
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
 
-.hidden{display:none}
-.message{text-align:center;margin:10px;color:#ff9900}
-</style>
+    button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .login-btn,
+    .save-btn {
+      background: #ff9900;
+      color: #111;
+    }
+
+    .logout-btn {
+      background: #d33;
+      color: white;
+    }
+
+    .edit-btn {
+      background: #2196f3;
+      color: white;
+      width: auto;
+      padding: 8px 14px;
+    }
+
+    .delete-btn {
+      background: #e53935;
+      color: white;
+      width: auto;
+      padding: 8px 14px;
+      margin-left: 5px;
+    }
+
+    .product {
+      background: #252525;
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 15px;
+    }
+
+    .product img {
+      width: 100%;
+      max-height: 220px;
+      object-fit: contain;
+      background: white;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .product-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #ffb300;
+    }
+
+    .price {
+      color: #00e676;
+      font-weight: bold;
+      margin: 8px 0;
+    }
+
+    .status {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .success {
+      display: block;
+      background: #164d25;
+      color: #8cff9b;
+    }
+
+    .error {
+      display: block;
+      background: #551b1b;
+      color: #ff8d8d;
+    }
+
+    .preview {
+      display: none;
+      width: 100%;
+      max-height: 250px;
+      object-fit: contain;
+      background: white;
+      border-radius: 10px;
+      margin: 10px 0;
+    }
+
+    .upload-btn {
+      background: #673ab7;
+      color: white;
+    }
+
+    .user-info {
+      text-align: center;
+      margin-bottom: 15px;
+      color: #bbb;
+      font-size: 14px;
+    }
+
+    #adminPanel {
+      display: none;
+    }
+
+    #loginBox {
+      display: block;
+    }
+
+    .loading {
+      text-align: center;
+      color: #ff9900;
+      padding: 15px;
+    }
+  </style>
 </head>
 
 <body>
 
 <div class="container">
 
-<div id="loginBox" class="card">
+  <h1>🛒 CLICK BAZAR</h1>
 
-<h1>🛒 Click Bazar</h1>
+  <!-- LOGIN -->
+  <div class="box" id="loginBox">
 
-<h2>🔐 Admin Login</h2>
+    <h2>🔐 Admin Login</h2>
 
-<input type="email" id="email" placeholder="Admin Email">
+    <input
+      type="email"
+      id="loginEmail"
+      placeholder="Admin Email"
+    >
 
-<input type="password" id="password" placeholder="Password">
+    <input
+      type="password"
+      id="loginPassword"
+      placeholder="Password"
+    >
 
-<button id="loginBtn">Login</button>
+    <button class="login-btn" id="loginBtn">
+      Login
+    </button>
 
-<div id="loginMsg" class="message"></div>
+    <div id="loginStatus" class="status"></div>
 
-</div>
-
-
-<div id="adminBox" class="hidden">
-
-<div class="card">
-
-<button class="logout" id="logoutBtn">Logout</button>
-
-<h1>🛒 Click Bazar Admin</h1>
-
-<h2>➕ Add / Edit Product</h2>
-
-<input type="text" id="title" placeholder="Product Title">
-
-<input type="number" id="price" placeholder="Price ₹">
-
-<input type="url" id="image" placeholder="Product Image URL">
-
-<input type="url" id="link" placeholder="Amazon Affiliate Link">
-
-<textarea id="desc" placeholder="Product Description"></textarea>
-
-<button id="saveBtn">➕ Add Product</button>
-
-<button id="cancelBtn"
-style="display:none;background:#555;color:white;margin-left:5px">
-Cancel
-</button>
-
-<div id="status" class="message"></div>
-
-</div>
+  </div>
 
 
-<div class="card">
+  <!-- ADMIN PANEL -->
+  <div id="adminPanel">
 
-<h2>📦 Products</h2>
+    <div class="box">
 
-<div id="productsList">Loading...</div>
+      <div class="user-info" id="userInfo"></div>
 
-</div>
+      <button class="logout-btn" id="logoutBtn">
+        Logout
+      </button>
 
-</div>
+    </div>
+
+
+    <!-- ADD / EDIT PRODUCT -->
+    <div class="box">
+
+      <h2 id="formTitle">➕ Add Product</h2>
+
+      <input
+        type="text"
+        id="title"
+        placeholder="Product Name"
+      >
+
+      <input
+        type="text"
+        id="price"
+        placeholder="Price जैसे ₹499"
+      >
+
+      <textarea
+        id="description"
+        placeholder="Product Description"
+      ></textarea>
+
+
+      <input
+        type="url"
+        id="amazonLink"
+        placeholder="Amazon Affiliate Link"
+      >
+
+
+      <h3>📷 Product Photo</h3>
+
+      <input
+        type="file"
+        id="imageFile"
+        accept="image/*"
+      >
+
+      <img
+        id="imagePreview"
+        class="preview"
+        alt="Preview"
+      >
+
+      <button
+        class="upload-btn"
+        id="uploadBtn"
+      >
+        📤 Upload Photo
+      </button>
+
+      <div id="uploadStatus" class="status"></div>
+
+
+      <!-- Hidden Image URL -->
+      <input
+        type="hidden"
+        id="imageUrl"
+      >
+
+
+      <button
+        class="save-btn"
+        id="saveBtn"
+      >
+        💾 Add Product
+      </button>
+
+      <button
+        id="cancelEditBtn"
+        style="display:none;background:#555;color:white;"
+      >
+        Cancel Edit
+      </button>
+
+      <div id="saveStatus" class="status"></div>
+
+    </div>
+
+
+    <!-- PRODUCTS -->
+    <div class="box">
+
+      <h2>📦 Products</h2>
+
+      <div id="productsList">
+        <div class="loading">
+          Loading products...
+        </div>
+      </div>
+
+    </div>
+
+  </div>
 
 </div>
 
 
 <script type="module">
 
-import { db, auth } from "./firebase.js";
+  import {
+    db,
+    auth
+  } from "./firebase.js";
 
-import {
-signInWithEmailAndPassword,
-onAuthStateChanged,
-signOut
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-import {
-collection,
-addDoc,
-getDocs,
-deleteDoc,
-doc,
-updateDoc,
-serverTimestamp
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import {
+    collection,
+    addDoc,
+    getDocs,
+    doc,
+    updateDoc,
+    deleteDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-let products=[];
-let editingId=null;
+  import {
+    signInWithEmailAndPassword,
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
-const loginBtn=document.getElementById("loginBtn");
+  /* =========================
+     CLOUDINARY SETTINGS
+  ========================= */
 
-const logoutBtn=document.getElementById("logoutBtn");
+  const CLOUD_NAME = "cghzw4pv";
 
+  const UPLOAD_PRESET = "clickbazar";
 
-loginBtn.addEventListener("click",async()=>{
 
-const email=document.getElementById("email").value.trim();
+  /* =========================
+     ELEMENTS
+  ========================= */
 
-const password=document.getElementById("password").value;
+  const loginBox =
+    document.getElementById("loginBox");
 
-const msg=document.getElementById("loginMsg");
+  const adminPanel =
+    document.getElementById("adminPanel");
 
-if(!email || !password){
+  const loginBtn =
+    document.getElementById("loginBtn");
 
-msg.textContent="Email और Password डालें";
+  const logoutBtn =
+    document.getElementById("logoutBtn");
 
-return;
+  const loginEmail =
+    document.getElementById("loginEmail");
 
-}
+  const loginPassword =
+    document.getElementById("loginPassword");
 
-try{
+  const loginStatus =
+    document.getElementById("loginStatus");
 
-await signInWithEmailAndPassword(
-auth,
-email,
-password
-);
+  const userInfo =
+    document.getElementById("userInfo");
 
-msg.textContent="Login successful ✅";
+  const imageFile =
+    document.getElementById("imageFile");
 
-}catch(error){
+  const imagePreview =
+    document.getElementById("imagePreview");
 
-console.error(error);
+  const uploadBtn =
+    document.getElementById("uploadBtn");
 
-msg.textContent="Login failed ❌";
+  const uploadStatus =
+    document.getElementById("uploadStatus");
 
-}
+  const imageUrl =
+    document.getElementById("imageUrl");
 
-});
+  const saveBtn =
+    document.getElementById("saveBtn");
 
+  const saveStatus =
+    document.getElementById("saveStatus");
 
-logoutBtn.addEventListener("click",async()=>{
+  const productsList =
+    document.getElementById("productsList");
 
-await signOut(auth);
+  const cancelEditBtn =
+    document.getElementById("cancelEditBtn");
 
-});
+  const formTitle =
+    document.getElementById("formTitle");
 
 
-onAuthStateChanged(auth,(user)=>{
+  let editingProductId = null;
 
-if(user){
 
-document.getElementById("loginBox")
-.classList.add("hidden");
+  /* =========================
+     STATUS FUNCTION
+  ========================= */
 
-document.getElementById("adminBox")
-.classList.remove("hidden");
+  function showStatus(element, message, type) {
 
-loadProducts();
+    element.textContent = message;
 
-}else{
+    element.className =
+      "status " + type;
 
-document.getElementById("loginBox")
-.classList.remove("hidden");
+  }
 
-document.getElementById("adminBox")
-.classList.add("hidden");
 
-}
+  /* =========================
+     LOGIN
+  ========================= */
 
-});
+  loginBtn.addEventListener(
+    "click",
+    async () => {
 
+      const email =
+        loginEmail.value.trim();
 
-document.getElementById("saveBtn")
-.addEventListener("click",saveProduct);
+      const password =
+        loginPassword.value;
 
+      if (!email || !password) {
 
-async function saveProduct(){
+        showStatus(
+          loginStatus,
+          "Email और Password भरें।",
+          "error"
+        );
 
-const title=document.getElementById("title").value.trim();
+        return;
+      }
 
-const price=document.getElementById("price").value.trim();
 
-const image=document.getElementById("image").value.trim();
+      loginBtn.disabled = true;
 
-const link=document.getElementById("link").value.trim();
+      loginBtn.textContent =
+        "Login हो रहा है...";
 
-const desc=document.getElementById("desc").value.trim();
 
-const status=document.getElementById("status");
+      try {
 
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
 
-if(!title || !price || !image || !link){
+        showStatus(
+          loginStatus,
+          "Login सफल!",
+          "success"
+        );
 
-status.textContent=
-"Title, Price, Image और Amazon Link जरूरी हैं.";
+      } catch (error) {
 
-return;
+        console.error(error);
 
-}
+        showStatus(
+          loginStatus,
+          "Login failed: " +
+          error.message,
+          "error"
+        );
 
+      }
 
-try{
 
-if(editingId){
+      loginBtn.disabled = false;
 
-await updateDoc(
+      loginBtn.textContent =
+        "Login";
 
-doc(db,"products",editingId),
+    }
+  );
 
-{
-title,
-price,
-image,
-link,
-desc,
-updatedAt:serverTimestamp()
-}
 
-);
+  /* =========================
+     AUTH STATE
+  ========================= */
 
-status.textContent="Product updated ✅";
+  onAuthStateChanged(
+    auth,
+    async (user) => {
 
-}else{
+      if (user) {
 
-await addDoc(
+        loginBox.style.display =
+          "none";
 
-collection(db,"products"),
+        adminPanel.style.display =
+          "block";
 
-{
-title,
-price,
-image,
-link,
-desc,
-createdAt:serverTimestamp()
-}
+        userInfo.textContent =
+          "Logged in: " +
+          user.email;
 
-);
+        await loadProducts();
 
-status.textContent="Product added ✅";
+      } else {
 
-}
+        loginBox.style.display =
+          "block";
 
-clearForm();
+        adminPanel.style.display =
+          "none";
 
-await loadProducts();
+      }
 
-}catch(error){
+    }
+  );
 
-console.error(error);
 
-status.textContent=
-"Error: "+error.message;
+  /* =========================
+     LOGOUT
+  ========================= */
 
-}
+  logoutBtn.addEventListener(
+    "click",
+    async () => {
 
-}
+      await signOut(auth);
 
+    }
+  );
 
-async function loadProducts(){
 
-const list=document.getElementById("productsList");
+  /* =========================
+     IMAGE PREVIEW
+  ========================= */
 
-list.innerHTML="Loading...";
+  imageFile.addEventListener(
+    "change",
+    () => {
 
-try{
+      const file =
+        imageFile.files[0];
 
-const snapshot=
-await getDocs(collection(db,"products"));
+      if (!file) {
 
-list.innerHTML="";
+        imagePreview.style.display =
+          "none";
 
-if(snapshot.empty){
+        return;
+      }
 
-list.innerHTML="<p>No products added yet.</p>";
 
-return;
+      const reader =
+        new FileReader();
 
-}
 
+      reader.onload =
+        function(event) {
 
-snapshot.forEach(item=>{
+          imagePreview.src =
+            event.target.result;
 
-const p=item.data();
+          imagePreview.style.display =
+            "block";
 
-const card=document.createElement("div");
+        };
 
-card.className="product";
 
+      reader.readAsDataURL(file);
 
-const img=document.createElement("img");
+    }
+  );
 
-img.src=p.image || "";
 
-img.alt=p.title || "";
+  /* =========================
+     CLOUDINARY UPLOAD
+  ========================= */
 
+  uploadBtn.addEventListener(
+    "click",
+    async () => {
 
-const info=document.createElement("div");
+      const file =
+        imageFile.files[0];
 
-info.className="product-info";
 
+      if (!file) {
 
-const title=document.createElement("h3");
+        showStatus(
+          uploadStatus,
+          "पहले Gallery से फोटो चुनें।",
+          "error"
+        );
 
-title.textContent=p.title || "";
+        return;
+      }
 
 
-const price=document.createElement("div");
+      uploadBtn.disabled = true;
 
-price.className="price";
+      uploadBtn.textContent =
+        "📤 Upload हो रहा है...";
 
-price.textContent="₹"+(p.price || "");
 
+      showStatus(
+        uploadStatus,
+        "Photo upload हो रही है...",
+        "success"
+      );
 
-const desc=document.createElement("p");
 
-desc.textContent=p.desc || "";
+      try {
 
+        const formData =
+          new FormData();
 
-const edit=document.createElement("button");
 
-edit.className="edit";
+        formData.append(
+          "file",
+          file
+        );
 
-edit.textContent="✏️ Edit";
 
-edit.onclick=()=>editProduct(item.id);
+        formData.append(
+          "upload_preset",
+          UPLOAD_PRESET
+        );
 
 
-const del=document.createElement("button");
+        const response =
+          await fetch(
+            `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+            {
+              method: "POST",
+              body: formData
+            }
+          );
 
-del.className="delete";
 
-del.textContent="🗑️ Delete";
+        const data =
+          await response.json();
 
-del.onclick=()=>deleteProduct(item.id);
 
+        if (!response.ok) {
 
-info.appendChild(title);
+          throw new Error(
+            data.error?.message ||
+            "Cloudinary upload failed"
+          );
 
-info.appendChild(price);
+        }
 
-info.appendChild(desc);
 
-info.appendChild(edit);
+        imageUrl.value =
+          data.secure_url;
 
-info.appendChild(del);
 
-card.appendChild(img);
+        showStatus(
+          uploadStatus,
+          "✅ Photo successfully upload हो गई!",
+          "success"
+        );
 
-card.appendChild(info);
 
-list.appendChild(card);
+      } catch (error) {
 
-});
+        console.error(error);
 
-}catch(error){
+        showStatus(
+          uploadStatus,
+          "❌ Photo upload failed: " +
+          error.message,
+          "error"
+        );
 
-console.error(error);
+      }
 
-list.innerHTML=
-"Products load नहीं हुए ❌";
 
-}
+      uploadBtn.disabled = false;
 
-}
+      uploadBtn.textContent =
+        "📤 Upload Photo";
 
+    }
+  );
 
-async function deleteProduct(id){
 
-if(!confirm(
-"क्या आप यह product delete करना चाहते हैं?"
-)) return;
+  /* =========================
+     ADD / UPDATE PRODUCT
+  ========================= */
 
+  saveBtn.addEventListener(
+    "click",
+    async () => {
 
-try{
+      const title =
+        document.getElementById(
+          "title"
+        ).value.trim();
 
-await deleteDoc(
-doc(db,"products",id)
-);
 
-await loadProducts();
+      const price =
+        document.getElementById(
+          "price"
+        ).value.trim();
 
-}catch(error){
 
-alert("Delete error: "+error.message);
+      const description =
+        document.getElementById(
+          "description"
+        ).value.trim();
 
-}
 
-}
+      const amazonLink =
+        document.getElementById(
+          "amazonLink"
+        ).value.trim();
 
 
-async function editProduct(id){
+      const photo =
+        imageUrl.value.trim();
 
-try{
 
-const snapshot=
-await getDocs(collection(db,"products"));
+      if (!title) {
 
-let product=null;
+        showStatus(
+          saveStatus,
+          "Product Name डालें।",
+          "error"
+        );
 
+        return;
+      }
 
-snapshot.forEach(item=>{
 
-if(item.id===id){
+      if (!amazonLink) {
 
-product={
-id:item.id,
-...item.data()
-};
+        showStatus(
+          saveStatus,
+          "Amazon Affiliate Link डालें।",
+          "error"
+        );
 
-}
+        return;
+      }
 
-});
 
+      if (!photo) {
 
-if(!product)return;
+        showStatus(
+          saveStatus,
+          "पहले Photo Upload करें।",
+          "error"
+        );
 
+        return;
+      }
 
-editingId=id;
 
-document.getElementById("title").value=
-product.title || "";
+      saveBtn.disabled = true;
 
-document.getElementById("price").value=
-product.price || "";
+      saveBtn.textContent =
+        "Saving...";
 
-document.getElementById("image").value=
-product.image || "";
 
-document.getElementById("link").value=
-product.link || "";
+      try {
 
-document.getElementById("desc").value=
-product.desc || "";
+        const productData = {
 
-document.getElementById("saveBtn").textContent=
-"💾 Update Product";
+          title: title,
 
-document.getElementById("cancelBtn").style.display=
-"inline-block";
+          price: price,
 
+          description: description,
 
-window.scrollTo({
-top:0,
-behavior:"smooth"
-});
+          amazonLink: amazonLink,
 
-}catch(error){
+          image: photo,
 
-console.error(error);
+          updatedAt:
+            serverTimestamp()
 
-}
+        };
 
-}
 
+        if (editingProductId) {
 
-document.getElementById("cancelBtn")
-.addEventListener("click",clearForm);
+          await updateDoc(
+            doc(
+              db,
+              "products",
+              editingProductId
+            ),
+            productData
+          );
 
 
-function clearForm(){
+          showStatus(
+            saveStatus,
+            "✅ Product update हो गया!",
+            "success"
+          );
 
-editingId=null;
+        } else {
 
-document.getElementById("title").value="";
+          productData.createdAt =
+            serverTimestamp();
 
-document.getElementById("price").value="";
 
-document.getElementById("image").value="";
+          await addDoc(
+            collection(
+              db,
+              "products"
+            ),
+            productData
+          );
 
-document.getElementById("link").value="";
 
-document.getElementById("desc").value="";
+          showStatus(
+            saveStatus,
+            "✅ Product successfully add हो गया!",
+            "success"
+          );
 
-document.getElementById("saveBtn").textContent=
-"➕ Add Product";
+        }
 
-document.getElementById("cancelBtn").style.display=
-"none";
 
-document.getElementById("status").textContent="";
+        clearForm();
 
-}
+        await loadProducts();
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        showStatus(
+          saveStatus,
+          "❌ Save failed: " +
+          error.message,
+          "error"
+        );
+
+      }
+
+
+      saveBtn.disabled = false;
+
+      saveBtn.textContent =
+        editingProductId
+          ? "💾 Update Product"
+          : "💾 Add Product";
+
+    }
+  );
+
+
+  /* =========================
+     LOAD PRODUCTS
+  ========================= */
+
+  async function loadProducts() {
+
+    productsList.innerHTML =
+      `<div class="loading">
+        Products loading...
+      </div>`;
+
+
+    try {
+
+      const snapshot =
+        await getDocs(
+          collection(
+            db,
+            "products"
+          )
+        );
+
+
+      productsList.innerHTML = "";
+
+
+      if (snapshot.empty) {
+
+        productsList.innerHTML =
+          "<p>अभी कोई product नहीं है।</p>";
+
+        return;
+      }
+
+
+      snapshot.forEach(
+        (productDoc) => {
+
+          const product =
+            productDoc.data();
+
+
+          const div =
+            document.createElement(
+              "div"
+            );
+
+
+          div.className =
+            "product";
+
+
+          const img =
+            document.createElement(
+              "img"
+            );
+
+          img.src =
+            product.image || "";
+
+          img.alt =
+            product.title || "Product";
+
+          img.onerror =
+            () => {
+              img.style.display =
+                "none";
+            };
+
+
+          const title =
+            document.createElement(
+              "div"
+            );
+
+          title.className =
+            "product-title";
+
+          title.textContent =
+            product.title || "";
+
+
+          const price =
+            document.createElement(
+              "div"
+            );
+
+          price.className =
+            "price";
+
+          price.textContent =
+            product.price || "";
+
+
+          const desc =
+            document.createElement(
+              "p"
+            );
+
+          desc.textContent =
+            product.description || "";
+
+
+          const editBtn =
+            document.createElement(
+              "button"
+            );
+
+          editBtn.className =
+            "edit-btn";
+
+          editBtn.textContent =
+            "✏️ Edit";
+
+
+          const deleteBtn =
+            document.createElement(
+              "button"
+            );
+
+          deleteBtn.className =
+            "delete-btn";
+
+          deleteBtn.textContent =
+            "🗑️ Delete";
+
+
+          editBtn.onclick =
+            () => {
+
+              editProduct(
+                productDoc.id,
+                product
+              );
+
+            };
+
+
+          deleteBtn.onclick =
+            () => {
+
+              deleteProduct(
+                productDoc.id
+              );
+
+            };
+
+
+          div.appendChild(img);
+
+          div.appendChild(title);
+
+          div.appendChild(price);
+
+          div.appendChild(desc);
+
+          div.appendChild(editBtn);
+
+          div.appendChild(deleteBtn);
+
+
+          productsList.appendChild(
+            div
+          );
+
+        }
+      );
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      productsList.innerHTML =
+        `<p style="color:#ff7777">
+          Products load नहीं हो सके।
+        </p>`;
+
+    }
+
+  }
+
+
+  /* =========================
+     EDIT PRODUCT
+  ========================= */
+
+  function editProduct(
+    id,
+    product
+  ) {
+
+    editingProductId =
+      id;
+
+
+    document.getElementById(
+      "title"
+    ).value =
+      product.title || "";
+
+
+    document.getElementById(
+      "price"
+    ).value =
+      product.price || "";
+
+
+    document.getElementById(
+      "description"
+    ).value =
+      product.description || "";
+
+
+    document.getElementById(
+      "amazonLink"
+    ).value =
+      product.amazonLink || "";
+
+
+    imageUrl.value =
+      product.image || "";
+
+
+    if (product.image) {
+
+      imagePreview.src =
+        product.image;
+
+      imagePreview.style.display =
+        "block";
+
+    }
+
+
+    formTitle.textContent =
+      "✏️ Edit Product";
+
+
+    saveBtn.textContent =
+      "💾 Update Product";
+
+
+    cancelEditBtn.style.display =
+      "block";
+
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+  }
+
+
+  /* =========================
+     DELETE PRODUCT
+  ========================= */
+
+  async function deleteProduct(id) {
+
+    const confirmDelete =
+      confirm(
+        "क्या आप यह product delete करना चाहते हैं?"
+      );
+
+
+    if (!confirmDelete) {
+
+      return;
+
+    }
+
+
+    try {
+
+      await deleteDoc(
+        doc(
+          db,
+          "products",
+          id
+        )
+      );
+
+
+      alert(
+        "Product delete हो गया।"
+      );
+
+
+      await loadProducts();
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "Delete failed: " +
+        error.message
+      );
+
+    }
+
+  }
+
+
+  /* =========================
+     CLEAR FORM
+  ========================= */
+
+  function clearForm() {
+
+    editingProductId =
+      null;
+
+
+    document.getElementById(
+      "title"
+    ).value = "";
+
+
+    document.getElementById(
+      "price"
+    ).value = "";
+
+
+    document.getElementById(
+      "description"
+    ).value = "";
+
+
+    document.getElementById(
+      "amazonLink"
+    ).value = "";
+
+
+    imageFile.value =
+      "";
+
+
+    imageUrl.value =
+      "";
+
+
+    imagePreview.src =
+      "";
+
+
+    imagePreview.style.display =
+      "none";
+
+
+    uploadStatus.className =
+      "status";
+
+
+    saveStatus.className =
+      "status";
+
+
+    formTitle.textContent =
+      "➕ Add Product";
+
+
+    saveBtn.textContent =
+      "💾 Add Product";
+
+
+    cancelEditBtn.style.display =
+      "none";
+
+  }
+
+
+  cancelEditBtn.addEventListener(
+    "click",
+    clearForm
+  );
+
 
 </script>
 

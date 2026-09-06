@@ -4,57 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Click Bazar - Online Shopping</title>
+  <title>Click Bazar 🛍️</title>
 
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
-      background: #111;
-      color: #fff;
       font-family: Arial, sans-serif;
-    }
-
-    /* INTRO */
-    #intro {
-      position: fixed;
-      inset: 0;
-      background: #111;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      animation: hideIntro 1s ease 2.5s forwards;
-    }
-
-    #introText {
-      font-size: 38px;
-      font-weight: bold;
-      color: #ff9900;
-      animation: zoom 1.5s ease;
-      text-align: center;
-    }
-
-    @keyframes zoom {
-      from {
-        transform: scale(0.5);
-        opacity: 0;
-      }
-
-      to {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
-
-    @keyframes hideIntro {
-      to {
-        opacity: 0;
-        visibility: hidden;
-      }
+      background: #f3f4f6;
+      color: #111827;
     }
 
     /* HEADER */
@@ -62,164 +24,368 @@
       position: sticky;
       top: 0;
       z-index: 1000;
-      background: #191919;
+      background: #111827;
       padding: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      box-shadow: 0 2px 10px rgba(0,0,0,.18);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: auto;
+      gap: 10px;
     }
 
     .logo {
-      text-align: center;
-      color: #ff9900;
-      font-size: 25px;
+      color: white;
+      font-size: 22px;
       font-weight: bold;
-      margin-bottom: 10px;
+      white-space: nowrap;
     }
 
     .search-box {
-      display: flex;
-      gap: 7px;
+      flex: 1;
+      max-width: 600px;
+      position: relative;
     }
 
     .search-box input {
-      flex: 1;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #444;
-      background: #292929;
-      color: white;
-      outline: none;
-    }
-
-    .search-box button {
-      padding: 12px 15px;
+      width: 100%;
+      padding: 12px 42px 12px 15px;
       border: none;
-      border-radius: 8px;
-      background: #ff9900;
-      color: #111;
-      font-weight: bold;
-    }
-
-    /* BANNER */
-    .banner {
-      margin: 15px;
-      padding: 25px 15px;
-      border-radius: 15px;
-      text-align: center;
-      background: linear-gradient(
-        135deg,
-        #ff9900,
-        #ffb52e,
-        #ff7a00
-      );
-      color: #111;
-    }
-
-    .banner h2 {
-      margin: 0 0 8px;
-      font-size: 25px;
-    }
-
-    .banner p {
-      margin: 0;
+      border-radius: 25px;
+      outline: none;
       font-size: 15px;
     }
 
-    /* PRODUCTS */
-    .section-title {
-      padding: 0 15px;
-      margin-top: 20px;
-      color: #ff9900;
+    .search-icon {
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      font-size: 20px;
     }
 
-    #products {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      padding: 15px;
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #ff9900, #ffb52e);
+      color: #111827;
+      padding: 25px 15px;
+      text-align: center;
     }
 
-    .card {
-      background: #1e1e1e;
-      border-radius: 12px;
-      padding: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+    .hero h1 {
+      font-size: 28px;
+      margin-bottom: 7px;
     }
 
-    .card img {
-      width: 100%;
-      height: 170px;
-      object-fit: contain;
+    .hero p {
+      font-size: 14px;
+    }
+
+    /* CATEGORIES */
+    .category-section {
       background: white;
-      border-radius: 9px;
+      padding: 15px 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.06);
     }
 
-    .card h3 {
+    .category-section h2 {
+      max-width: 1200px;
+      margin: 0 auto 12px;
+      font-size: 19px;
+    }
+
+    .categories {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      gap: 9px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    .categories::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category-btn {
+      border: 1px solid #ddd;
+      background: #fff;
+      padding: 9px 15px;
+      border-radius: 22px;
+      white-space: nowrap;
+      cursor: pointer;
+      font-size: 14px;
+      transition: .2s;
+    }
+
+    .category-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .category-btn.active {
+      background: #ff9900;
+      border-color: #ff9900;
+      color: #111;
+      font-weight: bold;
+    }
+
+    /* PRODUCTS */
+    .products-section {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px 12px 40px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      gap: 10px;
+    }
+
+    .section-title h2 {
+      font-size: 21px;
+    }
+
+    #productCount {
+      color: #6b7280;
+      font-size: 13px;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    /* CARD */
+    .product-card {
+      background: white;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 3px 12px rgba(0,0,0,.09);
+      transition: transform .2s, box-shadow .2s;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 7px 20px rgba(0,0,0,.14);
+    }
+
+    .image-box {
+      width: 100%;
+      height: 230px;
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 10px;
+    }
+
+    .category-badge {
+      position: absolute;
+      left: 9px;
+      top: 9px;
+      background: #111827;
+      color: white;
+      padding: 5px 9px;
+      border-radius: 15px;
+      font-size: 11px;
+    }
+
+    .product-info {
+      padding: 13px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .product-title {
       font-size: 16px;
-      margin: 10px 0 5px;
-      line-height: 1.3;
+      font-weight: bold;
+      line-height: 1.35;
+      margin-bottom: 7px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .product-description {
+      font-size: 13px;
+      color: #6b7280;
+      line-height: 1.4;
+      margin-bottom: 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .price {
-      color: #00e676;
+      font-size: 21px;
       font-weight: bold;
-      font-size: 17px;
-      margin-bottom: 5px;
-    }
-
-    .description {
-      color: #bbb;
-      font-size: 13px;
-      min-height: 35px;
-      margin-bottom: 8px;
+      color: #b45309;
+      margin-bottom: 12px;
     }
 
     .buy-btn {
       display: block;
-      width: 100%;
-      padding: 11px 5px;
-      border: none;
-      border-radius: 8px;
+      text-align: center;
       background: #ff9900;
       color: #111;
-      text-align: center;
       text-decoration: none;
       font-weight: bold;
-      cursor: pointer;
+      padding: 11px;
+      border-radius: 9px;
+      margin-top: auto;
+      transition: .2s;
     }
 
-    .buy-btn:active {
-      transform: scale(0.98);
+    .buy-btn:hover {
+      background: #ffad32;
     }
 
-    #loading {
-      grid-column: 1 / -1;
+    .buy-btn.disabled {
+      background: #d1d5db;
+      color: #6b7280;
+      pointer-events: none;
+    }
+
+    /* LOADING */
+    .loading {
       text-align: center;
-      color: #ff9900;
-      padding: 30px;
+      padding: 45px 10px;
+      color: #6b7280;
+      font-size: 16px;
     }
 
-    #noProducts {
-      grid-column: 1 / -1;
+    .spinner {
+      width: 35px;
+      height: 35px;
+      border: 4px solid #ddd;
+      border-top-color: #ff9900;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* EMPTY */
+    .empty {
       text-align: center;
-      color: #aaa;
-      padding: 30px;
-      display: none;
+      padding: 50px 15px;
+      color: #6b7280;
+      grid-column: 1 / -1;
+    }
+
+    .empty-icon {
+      font-size: 45px;
+      margin-bottom: 10px;
     }
 
     /* FOOTER */
     footer {
+      background: #111827;
+      color: #d1d5db;
       text-align: center;
       padding: 25px 15px;
-      margin-top: 20px;
-      background: #191919;
-      color: #888;
       font-size: 13px;
     }
 
-    @media (min-width: 700px) {
-      #products {
-        grid-template-columns: repeat(4, 1fr);
+    footer strong {
+      color: white;
+    }
+
+    /* MOBILE */
+    @media (max-width: 900px) {
+      .products-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .image-box {
+        height: 210px;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .topbar {
+        flex-wrap: wrap;
+      }
+
+      .logo {
+        width: 100%;
+        text-align: center;
+      }
+
+      .search-box {
+        max-width: none;
+        width: 100%;
+      }
+
+      .hero h1 {
+        font-size: 24px;
+      }
+
+      .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 11px;
+      }
+
+      .image-box {
+        height: 180px;
+      }
+
+      .product-info {
+        padding: 10px;
+      }
+
+      .product-title {
+        font-size: 14px;
+      }
+
+      .product-description {
+        font-size: 12px;
+      }
+
+      .price {
+        font-size: 18px;
+      }
+
+      .buy-btn {
+        font-size: 13px;
+        padding: 10px 5px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .image-box {
+        height: 240px;
       }
     }
   </style>
@@ -227,79 +393,82 @@
 
 <body>
 
-  <!-- INTRO -->
-  <div id="intro">
-    <div id="introText">
-      🛒 CLICK BAZAR
-    </div>
-  </div>
-
-
   <!-- HEADER -->
   <header>
+    <div class="topbar">
 
-    <div class="logo">
-      🛒 CLICK BAZAR
+      <div class="logo">
+        🛍️ Click Bazar
+      </div>
+
+      <div class="search-box">
+        <input
+          type="search"
+          id="searchInput"
+          placeholder="🔎 Product खोजें..."
+          autocomplete="off"
+        >
+        <span class="search-icon">🔍</span>
+      </div>
+
     </div>
-
-    <div class="search-box">
-
-      <input
-        type="search"
-        id="searchInput"
-        placeholder="Product खोजें..."
-      >
-
-      <button id="searchBtn">
-        🔍 Search
-      </button>
-
-    </div>
-
   </header>
 
 
-  <!-- BANNER -->
-  <section class="banner">
+  <!-- HERO -->
+  <section class="hero">
+    <h1>🛍️ Click Bazar</h1>
+    <p>आपके पसंदीदा Products एक ही जगह</p>
+  </section>
 
-    <h2>🛍️ Best Products</h2>
 
-    <p>
-      अच्छे products खोजें और Amazon पर खरीदें।
-    </p>
+  <!-- CATEGORIES -->
+  <section class="category-section">
+
+    <h2>🗂️ Categories</h2>
+
+    <div class="categories" id="categories">
+      <button class="category-btn active" data-category="All">
+        🏠 All
+      </button>
+
+      <!-- बाकी categories JavaScript से आएंगी -->
+    </div>
 
   </section>
 
 
-  <!-- PRODUCT SECTION -->
-  <h2 class="section-title">
-    🔥 Trending Products
-  </h2>
+  <!-- PRODUCTS -->
+  <main class="products-section">
 
-
-  <div id="products">
-
-    <div id="loading">
-      Products loading...
+    <div class="section-title">
+      <h2>🔥 Products</h2>
+      <span id="productCount">Loading...</span>
     </div>
 
-    <div id="noProducts">
-      कोई product नहीं मिला।
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      Products लोड हो रहे हैं...
     </div>
 
-  </div>
+    <div
+      id="productsGrid"
+      class="products-grid"
+      style="display:none;"
+    ></div>
+
+  </main>
 
 
   <!-- FOOTER -->
   <footer>
+    <p>
+      © 2026 <strong>Click Bazar</strong>
+    </p>
 
-    © 2026 Click Bazar
-
-    <br><br>
-
-    Amazon पर खरीदारी करने के लिए
-    product के Buy button पर क्लिक करें।
-
+    <p style="margin-top:6px;">
+      Amazon पर खरीदारी के लिए Product पर Buy button दबाएँ।
+    </p>
   </footer>
 
 
@@ -307,414 +476,581 @@
   <script type="module">
 
     import {
-      db
-    } from "./firebase.js";
-
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
     import {
+      getFirestore,
       collection,
       getDocs
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-    const productsContainer =
-      document.getElementById("products");
+    /* FIREBASE CONFIG */
 
+    const firebaseConfig = {
+      apiKey: "AIzaSyAm21JJrnFio4st-g9fzZXtGIJe9O55dog",
+      authDomain: "click-bazar-34142.firebaseapp.com",
+      projectId: "click-bazar-34142",
+      storageBucket: "click-bazar-34142.firebasestorage.app",
+      messagingSenderId: "935418282030",
+      appId: "1:935418282030:web:7414bf771fa1a5df721fbf"
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+
+    const db = getFirestore(app);
+
+
+    /* VARIABLES */
+
+    let allProducts = [];
+
+    let selectedCategory = "All";
+
+
+    const productsGrid =
+      document.getElementById("productsGrid");
 
     const loading =
       document.getElementById("loading");
 
-
-    const noProducts =
-      document.getElementById("noProducts");
-
-
     const searchInput =
       document.getElementById("searchInput");
 
+    const categoriesBox =
+      document.getElementById("categories");
 
-    const searchBtn =
-      document.getElementById("searchBtn");
+    const productCount =
+      document.getElementById("productCount");
 
 
-    let allProducts = [];
+    /* CATEGORY ICONS */
+
+    const categoryIcons = {
+
+      "Electronics": "📱",
+
+      "Mobile": "📱",
+
+      "Fashion": "👕",
+
+      "Clothing": "👗",
+
+      "Shoes": "👟",
+
+      "Home": "🏠",
+
+      "Home & Kitchen": "🏠",
+
+      "Kitchen": "🍳",
+
+      "Beauty": "💄",
+
+      "Books": "📚",
+
+      "Toys": "🧸",
+
+      "Grocery": "🛒",
+
+      "Sports": "⚽",
+
+      "Computer": "💻",
+
+      "Accessories": "🎧",
+
+      "Other": "📦"
+
+    };
 
 
-    /* ==========================
-       LOAD PRODUCTS
-    ========================== */
+    /* GET CATEGORY ICON */
+
+    function getCategoryIcon(category) {
+
+      return categoryIcons[category] || "📦";
+
+    }
+
+
+    /* LOAD PRODUCTS */
 
     async function loadProducts() {
-
-      loading.style.display =
-        "block";
-
-      noProducts.style.display =
-        "none";
-
 
       try {
 
         const snapshot =
-          await getDocs(
-            collection(
-              db,
-              "products"
-            )
-          );
-
+          await getDocs(collection(db, "products"));
 
         allProducts = [];
 
+        snapshot.forEach((doc) => {
 
-        snapshot.forEach(
-          (productDoc) => {
+          const data = doc.data();
 
-            const data =
-              productDoc.data();
+          allProducts.push({
 
+            id: doc.id,
 
-            allProducts.push({
+            ...data
 
-              id:
-                productDoc.id,
+          });
 
-              ...data
-
-            });
-
-          }
-        );
+        });
 
 
-        loading.style.display =
-          "none";
+        // Latest products first
+
+        allProducts.sort((a, b) => {
+
+          const aTime =
+            a.createdAt?.seconds || 0;
+
+          const bTime =
+            b.createdAt?.seconds || 0;
+
+          return bTime - aTime;
+
+        });
 
 
-        renderProducts(
-          allProducts
-        );
+        createCategories();
+
+        renderProducts();
 
 
-      } catch (error) {
+        loading.style.display = "none";
 
-        console.error(
-          "Firebase Error:",
-          error
-        );
+        productsGrid.style.display = "grid";
 
+      }
 
-        loading.textContent =
-          "Products load नहीं हो सके।";
+      catch (error) {
 
+        console.error(error);
+
+        loading.innerHTML = `
+
+          <div style="font-size:40px;">⚠️</div>
+
+          <p style="margin-top:10px;">
+            Products लोड नहीं हो पाए।
+          </p>
+
+          <p style="font-size:12px;margin-top:6px;">
+            कृपया Internet connection check करें।
+          </p>
+
+        `;
 
       }
 
     }
 
 
-    /* ==========================
-       RENDER PRODUCTS
-    ========================== */
+    /* CREATE CATEGORIES */
 
-    function renderProducts(
-      products
-    ) {
+    function createCategories() {
 
-      productsContainer.innerHTML =
-        "";
+      // Existing category names
 
+      const categorySet = new Set();
 
-      if (
-        !products ||
-        products.length === 0
-      ) {
 
-        noProducts.style.display =
-          "block";
+      allProducts.forEach(product => {
 
-        productsContainer.appendChild(
-          noProducts
-        );
+        const category =
+          String(product.category || "Other").trim();
 
-        return;
+        if (category) {
 
-      }
-
-
-      noProducts.style.display =
-        "none";
-
-
-      products.forEach(
-        (product) => {
-
-          const card =
-            document.createElement(
-              "div"
-            );
-
-
-          card.className =
-            "card";
-
-
-          /* IMAGE */
-
-          const img =
-            document.createElement(
-              "img"
-            );
-
-
-          img.src =
-            product.image || "";
-
-
-          img.alt =
-            product.title ||
-            "Product";
-
-
-          img.loading =
-            "lazy";
-
-
-          img.onerror =
-            function() {
-
-              this.style.display =
-                "none";
-
-            };
-
-
-          /* TITLE */
-
-          const title =
-            document.createElement(
-              "h3"
-            );
-
-
-          title.textContent =
-            product.title ||
-            "Product";
-
-
-          /* PRICE */
-
-          const price =
-            document.createElement(
-              "div"
-            );
-
-
-          price.className =
-            "price";
-
-
-          price.textContent =
-            product.price ||
-            "";
-
-
-          /* DESCRIPTION */
-
-          const description =
-            document.createElement(
-              "div"
-            );
-
-
-          description.className =
-            "description";
-
-
-          description.textContent =
-            product.description ||
-            "";
-
-
-          /* BUY BUTTON */
-
-          const buyButton =
-            document.createElement(
-              "a"
-            );
-
-
-          buyButton.className =
-            "buy-btn";
-
-
-          buyButton.textContent =
-            "🛒 Buy on Amazon";
-
-
-          /*
-             IMPORTANT:
-             Firestore से amazonLink
-             सीधे इस्तेमाल होगा।
-          */
-
-          let amazonLink =
-            String(
-              product.amazonLink ||
-              ""
-            ).trim();
-
-
-          /*
-             अगर link http/https से
-             शुरू नहीं है तो उसे
-             valid नहीं मानेंगे।
-          */
-
-          if (
-            amazonLink.startsWith(
-              "https://"
-            ) ||
-            amazonLink.startsWith(
-              "http://"
-            )
-          ) {
-
-            buyButton.href =
-              amazonLink;
-
-            buyButton.target =
-              "_blank";
-
-            buyButton.rel =
-              "noopener noreferrer";
-
-          } else {
-
-            buyButton.href =
-              "#";
-
-
-            buyButton.addEventListener(
-              "click",
-              function(event) {
-
-                event.preventDefault();
-
-                alert(
-                  "इस product का Amazon link उपलब्ध नहीं है।"
-                );
-
-              }
-            );
-
-          }
-
-
-          card.appendChild(img);
-
-          card.appendChild(title);
-
-          card.appendChild(price);
-
-          card.appendChild(description);
-
-          card.appendChild(buyButton);
-
-
-          productsContainer.appendChild(
-            card
-          );
+          categorySet.add(category);
 
         }
-      );
+
+      });
+
+
+      const categories =
+        Array.from(categorySet).sort();
+
+
+      // Remove old dynamic buttons
+
+      categoriesBox
+        .querySelectorAll(".dynamic-category")
+        .forEach(btn => btn.remove());
+
+
+      categories.forEach(category => {
+
+        const button =
+          document.createElement("button");
+
+        button.className =
+          "category-btn dynamic-category";
+
+        button.dataset.category =
+          category;
+
+        button.innerHTML =
+          `${getCategoryIcon(category)} ${escapeHtml(category)}`;
+
+
+        button.addEventListener("click", () => {
+
+          selectedCategory =
+            category;
+
+          updateActiveCategory();
+
+          renderProducts();
+
+        });
+
+
+        categoriesBox.appendChild(button);
+
+      });
+
+
+      // All button
+
+      const allButton =
+        categoriesBox.querySelector(
+          '[data-category="All"]'
+        );
+
+
+      allButton.addEventListener("click", () => {
+
+        selectedCategory = "All";
+
+        updateActiveCategory();
+
+        renderProducts();
+
+      });
 
     }
 
 
-    /* ==========================
-       SEARCH
-    ========================== */
+    /* ACTIVE CATEGORY */
 
-    function searchProducts() {
+    function updateActiveCategory() {
 
-      const query =
+      categoriesBox
+        .querySelectorAll(".category-btn")
+        .forEach(button => {
+
+          button.classList.toggle(
+            "active",
+            button.dataset.category === selectedCategory
+          );
+
+        });
+
+    }
+
+
+    /* RENDER PRODUCTS */
+
+    function renderProducts() {
+
+      const searchText =
         searchInput.value
           .trim()
           .toLowerCase();
 
 
-      if (!query) {
+      let filtered =
+        allProducts.filter(product => {
 
-        renderProducts(
-          allProducts
-        );
+          const title =
+            String(product.title || "")
+              .toLowerCase();
+
+          const description =
+            String(product.description || "")
+              .toLowerCase();
+
+          const category =
+            String(product.category || "Other")
+              .toLowerCase();
+
+
+          const matchesSearch =
+
+            !searchText ||
+
+            title.includes(searchText) ||
+
+            description.includes(searchText) ||
+
+            category.includes(searchText);
+
+
+          const productCategory =
+            String(product.category || "Other");
+
+
+          const matchesCategory =
+
+            selectedCategory === "All" ||
+
+            productCategory === selectedCategory;
+
+
+          return (
+            matchesSearch &&
+            matchesCategory
+          );
+
+        });
+
+
+      productCount.textContent =
+        `${filtered.length} Product${filtered.length === 1 ? "" : "s"}`;
+
+
+      productsGrid.innerHTML = "";
+
+
+      if (filtered.length === 0) {
+
+        productsGrid.innerHTML = `
+
+          <div class="empty">
+
+            <div class="empty-icon">
+              🔍
+            </div>
+
+            <h3>
+              कोई Product नहीं मिला
+            </h3>
+
+            <p style="margin-top:7px;">
+              Search या Category बदलकर देखें।
+            </p>
+
+          </div>
+
+        `;
 
         return;
 
       }
 
 
-      const filtered =
-        allProducts.filter(
-          (product) => {
+      filtered.forEach(product => {
 
-            const title =
-              String(
-                product.title || ""
-              ).toLowerCase();
-
-
-            const description =
-              String(
-                product.description || ""
-              ).toLowerCase();
-
-
-            return (
-              title.includes(query) ||
-              description.includes(query)
-            );
-
-          }
+        productsGrid.appendChild(
+          createProductCard(product)
         );
 
-
-      renderProducts(
-        filtered
-      );
+      });
 
     }
 
 
-    searchBtn.addEventListener(
-      "click",
-      searchProducts
-    );
+    /* PRODUCT CARD */
 
+    function createProductCard(product) {
+
+      const card =
+        document.createElement("div");
+
+      card.className =
+        "product-card";
+
+
+      const title =
+        product.title || "Product";
+
+
+      const price =
+        product.price || "";
+
+
+      const description =
+        product.description || "";
+
+
+      const image =
+        product.image || "";
+
+
+      const category =
+        product.category || "Other";
+
+
+      const amazonLink =
+        product.amazonLink || "";
+
+
+      card.innerHTML = `
+
+        <div class="image-box">
+
+          ${
+            image
+
+            ? `
+
+              <img
+                src="${escapeAttribute(image)}"
+                alt="${escapeAttribute(title)}"
+                loading="lazy"
+                onerror="this.style.display='none';this.parentElement.innerHTML='<span style=&quot;font-size:45px&quot;>🛍️</span>';"
+              >
+
+            `
+
+            : `
+
+              <span style="font-size:45px;">
+                🛍️
+              </span>
+
+            `
+          }
+
+
+          <span class="category-badge">
+
+            ${getCategoryIcon(category)}
+            ${escapeHtml(category)}
+
+          </span>
+
+        </div>
+
+
+        <div class="product-info">
+
+          <div class="product-title">
+
+            ${escapeHtml(title)}
+
+          </div>
+
+
+          <div class="product-description">
+
+            ${escapeHtml(description)}
+
+          </div>
+
+
+          <div class="price">
+
+            ₹${escapeHtml(String(price))}
+
+          </div>
+
+
+          ${
+            isValidUrl(amazonLink)
+
+            ? `
+
+              <a
+                class="buy-btn"
+                href="${escapeAttribute(amazonLink)}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+
+                🛒 Buy on Amazon
+
+              </a>
+
+            `
+
+            : `
+
+              <span class="buy-btn disabled">
+
+                Link उपलब्ध नहीं है
+
+              </span>
+
+            `
+          }
+
+        </div>
+
+      `;
+
+
+      return card;
+
+    }
+
+
+    /* SEARCH */
 
     searchInput.addEventListener(
       "input",
-      searchProducts
-    );
+      () => {
 
-
-    /* ENTER SEARCH */
-
-    searchInput.addEventListener(
-      "keydown",
-      function(event) {
-
-        if (
-          event.key === "Enter"
-        ) {
-
-          searchProducts();
-
-        }
+        renderProducts();
 
       }
     );
+
+
+    /* URL CHECK */
+
+    function isValidUrl(url) {
+
+      try {
+
+        const parsed =
+          new URL(url);
+
+        return (
+          parsed.protocol === "https:" ||
+          parsed.protocol === "http:"
+        );
+
+      }
+
+      catch {
+
+        return false;
+
+      }
+
+    }
+
+
+    /* HTML SECURITY */
+
+    function escapeHtml(value) {
+
+      return String(value)
+
+        .replace(/&/g, "&amp;")
+
+        .replace(/</g, "&lt;")
+
+        .replace(/>/g, "&gt;")
+
+        .replace(/"/g, "&quot;")
+
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    function escapeAttribute(value) {
+
+      return escapeHtml(value);
+
+    }
 
 
     /* START */
